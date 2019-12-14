@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+	*{
+     margin: 0px;
+	}
+    .left{
+       float: left;
+       top:-250px;
+       position:relative;
+       font-size: 50px;
+       opacity: 0;
+    }
+    .right{
+       float: right;
+       top:-250px;
+       position:relative;
+       font-size: 50px;
+       opacity: 0;
+    }
+    
+    .pic{
+    	width: 1200px;
+    	overflow: hidden;
+    	float: left;
+    }
+    
+	li{
+		background-color: #ccc;
+		width: 20px;
+		color: gray;
+		text-align: center;
+		margin-right: 30px;
+		float:left;
+		border-radius: 50%;
+		position:relative;
+		top:-35px;
+		list-style: none;
+	}
+    li:first-child{
+    	margin-left: 450px;
+    }
+	.div{
+	    	width: 1200px;
+			height: 382px;
+            margin: 10px auto;
+            overflow: hidden;
+            position: relative;
+	}
+    .slider{
+			width:8400px;
+			height: 382px;
+			float: left;
+			position:relative;
+			font-size:0%;
+			margin-left:-1200px;
+    }
+    
+    .active{
+    	color:red;
+    }  
+    img{
+     	margin-left:-10px;
+     }
+	.slogan{
+		height: 20px;
+		padding-left: 250px;
+		background-color:#cccccc;
+	}
+    .text1{
+    	font-size: 15px;
+    	color: red;
+    	float: right;
+    	height: 20px;
+    	width: 1000px;
+    	margin-right: 270px;
+    	position:relative;
+    	overflow: hidden;
+    }
+    .text2{
+    	float: left;
+    }
+	</style>
+</head>
+<body>
+	<div class="slogan" id="slogan" >
+    	<img src="a15.png">
+    	<div class="text1" id="text1" style="margin-left:0px";>
+    		<p class="text2" id="text2">[温馨提示]最近有不少不法分子在网上骗人，请大家注意!!!
+    		</p>
+    	</div>
+    </div>
+        
+<div class="div" id="div">
+	<div class="slider" id="slider">
+		<div class="pic"><img src="b5.png"></div>
+		<div class="pic"><img src="b1.png"></div>
+		<div class="pic"><img src="b2.png"></div>
+		<div class="pic"><img src="b3.png"></div>
+		<div class="pic"><img src="b4.png"></div>
+		<div class="pic"><img src="b5.png"></div>
+		<div class="pic"><img src="b1.png"></div>
+	</div>
+
+	<span id="left" class="left"><</span>
+	<span id="right" class="right">></span>
+
+	<ul class="nav" id="nav">
+		<li  class="active">1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+	</ul>
+</div>
+</body>
+<script type="text/javascript">
+     var slider = document.getElementById("slider");
+     var div = document.getElementById("div");
+     var right = document.getElementById("right");
+     var navList = document.getElementById("nav").children;
+     var text2= document.getElementById("text2");
+     var index = 0;
+
+     var j=950;
+
+     setInterval(function(){
+        text2.style.marginLeft = j + "px";
+        console.log(j);
+        j--;
+        if(j<-400){
+            j=950;
+        }
+    }, 10);
+
+
+     function next(){
+        index++;
+        navChange();
+     	animate(slider,{left:-1200*index},function(){
+     		if(index===5){
+               slider.style.left = "0px";
+               index=0;
+     		}
+     	});
+     } 
+     function last(){
+        index--;
+        navChange();
+     	animate(slider,{left:-1200*index},function(){
+     		if(index===-1){
+               slider.style.left = "-4800px";
+               index=4;
+     		}
+     	});
+     }
+     var timer = setInterval(next,1500);
+        div.onmouseover = function(){
+         animate(left,{opacity:50})
+         animate(right,{opacity:50})
+         clearInterval(timer)
+        }
+        div.onmouseout = function(){
+         animate(left,{opacity:0});
+         animate(right,{opacity:0});
+         timer=setInterval(next,1500);
+        }
+     right.onclick = next;  
+     left.onclick = last;
+     for(var i = 0;i<navList.length;i++){
+     	navList[i].dix = i;
+     	navList[i].onclick = function(){
+             index = this.dix;
+             navChange();
+             animate(slider,{left:-1200*index})
+     	}
+     }
+
+     function navChange(){
+     	for(var i = 0;i<navList.length;i++){
+     		navList[i].className="";
+     	} 
+     	if(index===5){
+     		navList[0].className="active";
+     	}else if(index===-1){
+     		navList[4].className="active";
+     	}else{
+     		navList[index].className="active";
+     	}
+     	
+     }
+
+
+
+
+
+
+
+
+
+	function getStyle(obj, attr){
+	if(obj.currentStyle){
+		return obj.currentStyle[attr];
+	} else {
+		return getComputedStyle(obj, null)[attr];
+	}
+	}
+	function animate(obj,json,callback){
+	clearInterval(obj.timer);
+	obj.timer = setInterval(function(){
+		var isStop = true;
+		for(var attr in json){
+			var now = 0;
+			if(attr == 'opacity'){
+				now = parseInt(getStyle(obj,attr)*100);
+			}else{
+				now = parseInt(getStyle(obj,attr));
+			}
+			var speed = (json[attr] - now) / 8;
+			speed = speed>0?Math.ceil(speed):Math.floor(speed);
+			var cur = now + speed;
+			if(attr == 'opacity'){
+				obj.style[attr] = cur / 100;
+			}else{
+				obj.style[attr] = cur + 'px';
+			}
+			if(json[attr] !== cur){
+				isStop = false;
+				}
+			}
+			if(isStop){
+			clearInterval(obj.timer);
+			callback&&callback();
+			}
+			}, 30)
+		}
+</script>
+</html>
